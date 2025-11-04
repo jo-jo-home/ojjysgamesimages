@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Credits | ojjy's games</title>
+  <link rel="icon" type="image/png" href="https://yt3.googleusercontent.com/ytc/AIdro_kQ0iaCvqQ2SvyGkd8wkHBh69utDPzwsb8ISlQUL-ayTQs=s900-c-k-c0x00ffffff-no-rj">
+  <style>
+    /* Reset & layout */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; width: 100%; overflow-x: hidden; }
+    body {
+      font-family: Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+      color: #e6e9f0;
+      background: radial-gradient(120% 100% at 0% 0%, #0b1e3d 0%, #030712 60%);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Background canvas (same as main) */
+    #bg-constellation {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      display: block;
+    }
+
+    /* Header (matches main) */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 5;
+      background: rgba(6, 14, 30, 0.25);
+      border-bottom: 1px solid rgba(140,200,255,.16);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #eaf2ff;
+      text-decoration: none;
+    }
+    .brand-badge {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: linear-gradient(135deg, #6aa3ff, #8cc8ff);
+      box-shadow: 0 6px 18px rgba(40,120,255,.28);
+    }
+    /* NEW: brand logo (used instead of the badge) */
+    .brand-logo {
+      width: 22px; height: 22px; border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 6px 18px rgba(40,120,255,.28);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      /* slide the buttons a bit more left (same feel as main if you did that there) */
+      margin-right: 20px;
+    }
+    .nav-link, .btn-ghost {
+      appearance: none;
+      border: 1px solid rgba(140,200,255,.28);
+      background: rgba(10, 24, 52, 0.45);
+      color: #d9e8ff;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+      box-shadow: 0 6px 20px rgba(40,120,255,.15);
+    }
+    .nav-link:hover, .btn-ghost:hover {
+      border-color: rgba(140,200,255,.6);
+      box-shadow: 0 10px 26px rgba(40,120,255,.22);
+      background: rgba(20, 50, 110, 0.55);
+    }
+    .btn-ghost:active { transform: translateY(1px) scale(.98); }
+    .nav-ico { font-size: 14px; line-height: 1; opacity: .95; }
+
+    /* Settings dropdown (same as main) */
+    .settings-wrap { position: relative; }
+    .settings-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      min-width: 260px;
+      background: rgba(8,20,45,.92);
+      border: 1px solid rgba(140,200,255,.35);
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(40,120,255,.20);
+      padding: 8px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      z-index: 10;
+    }
+    .settings-menu.open { display: block; }
+    .settings-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      background: transparent;
+      border: 0;
+      color: #cfe2ff;
+      cursor: pointer;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    .settings-item:hover { background: rgba(140,200,255,.12); }
+    .settings-item img {
+      width: 18px; height: 18px; border-radius: 4px; object-fit: cover;
+    }
+    .settings-hint { font-size: 12px; opacity: .7; margin-left: 4px; }
+
+    /* Page content */
+    main {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      min-height: calc(100vh - 64px);
+      padding: 64px 16px 120px; /* keep bottom padding so nothing clips */
+      text-align: center;
+    }
+    .page-title {
+      font-weight: 900;
+      font-size: clamp(40px, 8vw, 88px);
+      line-height: 1.08;
+      background: linear-gradient(90deg, #6aa3ff, #a3d1ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    .page-sub {
+      margin-top: 2px;
+      font-size: clamp(14px, 2.4vw, 18px);
+      color: #b8c6e0;
+      max-width: 800px;
+      opacity: .9;
+    }
+
+    /* Footer */
+    footer {
+      font-size: .9em;
+      color: #7289da;
+      text-align: center;
+      opacity: .85;
+      position: fixed;
+      bottom: 16px;
+      left: 0; right: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #bg-constellation { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Same background canvas -->
+  <canvas id="bg-constellation" aria-hidden="true"></canvas>
+
+  <!-- Header (same nav + working Settings) -->
+  <header class="site-header">
+    <a href="main.html" class="brand" aria-label="ojjy's games home">
+      <img src="https://cdn.jsdelivr.net/gh/jo-jo-home/ojjysgamesimages@main/ojjysgameslogo.jpg" alt="ojjy's games logo" class="brand-logo" aria-hidden="true">
+      ojjy's games
+    </a>
+    <nav class="nav-right" aria-label="Primary">
+      <a class="nav-link" href="main.html"><span class="nav-ico" aria-hidden="true">🏠</span> Home</a>
+      <a class="nav-link" href="games.html"><span class="nav-ico" aria-hidden="true">🎮</span> Games</a>
+      <a class="nav-link" href="credits.html"><span class="nav-ico" aria-hidden="true">📜</span> Credits</a>
+
+      <div class="settings-wrap">
+        <button id="settingsBtn" class="btn-ghost" type="button" aria-expanded="false" aria-controls="settingsMenu">
+          ⚙️ Settings
+        </button>
+        <div id="settingsMenu" class="settings-menu" role="menu" aria-label="Tab & favicon presets">
+          <button class="settings-item" role="menuitem"
+            data-title="Clever | Portal"
+            data-icon="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE5uNEUh_MHq3NNtEvUem-R_xKTt0O6TnP_g&s">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE5uNEUh_MHq3NNtEvUem-R_xKTt0O6TnP_g&s" alt="">
+            Clever | Portal <span class="settings-hint">(default)</span>
+          </button>
+          <button class="settings-item" role="menuitem"
+            data-title="Dashboard"
+            data-icon="https://www.clipartmax.com/png/middle/191-1913494_adding-faculty-evaluators-tutors-si-leaders-and-canvas-instructure-logo.png">
+            <img src="https://www.clipartmax.com/png/middle/191-1913494_adding-faculty-evaluators-tutors-si-leaders-and-canvas-instructure-logo.png" alt="">
+            Dashboard
+          </button>
+          <button class="settings-item" role="menuitem"
+            data-title="StudentVUE"
+            data-icon="https://cdn.jsdelivr.net/gh/jo-jo-home/ojjysgamesimages@main/studentvue.jpg">
+            <img src="https://cdn.jsdelivr.net/gh/jo-jo-home/ojjysgamesimages@main/studentvue.jpg" alt="">
+            StudentVUE
+          </button>
+        </div>
+      </div>
+
+      <!-- NEW: Buttons to the right of Settings -->
+      <a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSfLWq8FDilgxR5wm1ccRTGj-zvKvL_qb65wZPxd4lvKza4XJg/viewform?usp=sharing&ouid=105489021939628840342" target="_blank" rel="noopener">
+        <span class="nav-ico" aria-hidden="true">💡</span> Game Suggestions
+      </a>
+      <a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLScHeUw0slOFvMp1LjjQei-8-wx7fAE30bJic5gfqBIUjO50PA/viewform?usp=header" target="_blank" rel="noopener">
+        <span class="nav-ico" aria-hidden="true">🐞</span> Report A Blocked Game Or Bug
+      </a>
+      <!-- Sits with the other buttons -->
+      <button id="openBlankBtn" class="btn-ghost">
+        <span class="nav-ico">🌀</span> Open in about:blank
+      </button>
+    </nav>
+  </header>
+
+  <!-- Content -->
+  <main>
+    <div>
+      <h1 class="page-title">Credits</h1>
+      <p class="page-sub">Big credits to Andrew Zagrocki (for the idea), Mateo Benavides (for suggesting some w games), and David Copeland (for the Neutro Proxy). ❤️</p>
+    </div>
+  </main>
+
+  <footer>made with ❤️ by somebody oct 2025</footer>
+
+  <!-- Background script: SAME behavior as main (mouse-connected constellations, no horizontal scroll) -->
+  <script>
+    (() => {
+      const canvas = document.getElementById('bg-constellation');
+      if (!canvas) return;
+
+      let ctx, dpr, w, h, particles = [], maxDist, lineDist, rafId = null;
+      const mouse = { x: 0, y: 0, active: false };
+      const isMobile = () => /Mobi|Android/i.test(navigator.userAgent);
+
+      function resize() {
+        dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+        w = canvas.width = Math.floor(window.innerWidth * dpr);
+        h = canvas.height = Math.floor(window.innerHeight * dpr);
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+
+        /* density & distances tuned to match main */
+        const density = isMobile() ? 0.14 : 0.22;
+        const targetCount = Math.round((w * h) / (1000 * dpr * 1000) * density * 1200);
+        particles = new Array(Math.max(140, targetCount)).fill(0).map(spawn);
+        maxDist = (Math.min(w, h) / 12);
+        lineDist = maxDist * 1.2;
+      }
+
+      function spawn() {
+        const speed = (Math.random() * 0.25 + 0.05) * (isMobile() ? 0.7 : 1);
+        const angle = Math.random() * Math.PI * 2;
+        return {
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          r: (Math.random() * 1.2 + 0.8) * dpr,
+          twinkle: Math.random() * 1
+        };
+      }
+
+      function step() {
+        ctx.clearRect(0, 0, w, h);
+
+        // stars
+        for (const p of particles) {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < -50) p.x = w + 50;
+          if (p.x > w + 50) p.x = -50;
+          if (p.y < -50) p.y = h + 50;
+          if (p.y > h + 50) p.y = -50;
+
+          p.twinkle += 0.008;
+          const alpha = 0.5 + Math.sin(p.twinkle) * 0.25;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(200, 220, 255, ${0.55 * alpha})`;
+          ctx.fill();
+        }
+
+        // particle-to-particle lines
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const a = particles[i], b = particles[j];
+            const dx = a.x - b.x, dy = a.y - b.y;
+            const d2 = dx*dx + dy*dy;
+            if (d2 < lineDist * lineDist) {
+              const d = Math.sqrt(d2);
+              const t = 1 - d / lineDist;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.lineWidth = Math.max(0.5 * dpr, t * 1.2 * dpr);
+              ctx.strokeStyle = `rgba(140, 200, 255, ${0.12 + t * 0.22})`;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // particle-to-mouse lines (same effect as main)
+        if (mouse.active) {
+          for (const p of particles) {
+            const dx = p.x - mouse.x;
+            const dy = p.y - mouse.y;
+            const d2 = dx*dx + dy*dy;
+            if (d2 < lineDist * lineDist) {
+              const d = Math.sqrt(d2);
+              const t = 1 - d / lineDist;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(mouse.x, mouse.y);
+              ctx.lineWidth = Math.max(0.6 * dpr, t * 1.5 * dpr);
+              ctx.strokeStyle = `rgba(230, 240, 255, ${0.35 + t * 0.45})`;
+              ctx.stroke();
+            }
+          }
+        }
+
+        rafId = requestAnimationFrame(step);
+      }
+
+      function start() {
+        ctx = canvas.getContext('2d', { alpha: true });
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', e => { mouse.x = e.clientX * dpr; mouse.y = e.clientY * dpr; mouse.active = true; });
+        window.addEventListener('mouseleave', () => { mouse.active = false; });
+        resize();
+        rafId = requestAnimationFrame(step);
+      }
+      function stop() {
+        if (rafId) cancelAnimationFrame(rafId);
+        window.removeEventListener('resize', resize);
+      }
+
+      start();
+      window.addEventListener('pagehide', stop);
+    })();
+  </script>
+
+  <!-- Settings script (identical behavior to main; persists choice) -->
+  <script>
+    (function(){
+      const settingsBtn = document.getElementById('settingsBtn');
+      const menu = document.getElementById('settingsMenu');
+      if (!settingsBtn || !menu) return;
+
+      const FAV_KEY = 'tabPreset';
+
+      function getOrCreateFavicon(rel) {
+        let link = document.querySelector(`link[rel="${rel}"]`);
+        if (!link) {
+          link = document.createElement('link');
+          link.rel = rel;
+          link.type = 'image/png';
+          document.head.appendChild(link);
+        }
+        return link;
+      }
+
+      function applyPreset(title, iconUrl) {
+        document.title = title;
+        const icon = getOrCreateFavicon('icon');
+        const shortcut = getOrCreateFavicon('shortcut icon');
+        icon.href = iconUrl;
+        shortcut.href = iconUrl;
+        try { localStorage.setItem(FAV_KEY, JSON.stringify({ title, iconUrl })); } catch(e){}
+      }
+
+      // Restore saved preset on load
+      try {
+        const saved = JSON.parse(localStorage.getItem(FAV_KEY) || 'null');
+        if (saved && saved.title && saved.iconUrl) applyPreset(saved.title, saved.iconUrl);
+      } catch(e){}
+
+      // Open/close menu
+      function toggleMenu(force) {
+        const open = (typeof force === 'boolean') ? force : !menu.classList.contains('open');
+        menu.classList.toggle('open', open);
+        settingsBtn.setAttribute('aria-expanded', String(open));
+      }
+      settingsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+      document.addEventListener('click', (e) => {
+        if (!menu.contains(e.target) && e.target !== settingsBtn) toggleMenu(false);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') toggleMenu(false);
+      });
+
+      // Apply chosen preset
+      menu.querySelectorAll('.settings-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const title = btn.getAttribute('data-title');
+          const icon = btn.getAttribute('data-icon');
+          applyPreset(title, icon);
+          toggleMenu(false);
+        });
+      });
+    })();
+  </script>
+    <!-- about:blank shell + routing (preserves & updates title/icon) -->
+  <script>
+(() => {
+  let blankWin = null;
+  const FAV_KEY = 'tabPreset';
+  const DEFAULT_TITLE = 'Clever | Portal';
+  const DEFAULT_ICON  = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE5uNEUh_MHq3NNtEvUem-R_xKTt0O6TnP_g&s';
+
+  function getPreset() {
+    try {
+      const v = JSON.parse(localStorage.getItem(FAV_KEY) || 'null');
+      if (v && v.title && v.iconUrl) return v;
+    } catch(e){}
+    return { title: DEFAULT_TITLE, iconUrl: DEFAULT_ICON };
+  }
+
+  function openAboutBlank(startUrl) {
+    const preset = getPreset();
+
+    blankWin = window.open('about:blank', '_blank');
+    if (!blankWin) {
+      alert('Please allow popups for this site.');
+      return;
+    }
+
+    // Build shell with title+favicons and an API (setTab, nav) we can call later
+    const doc = blankWin.document;
+    const shell = `
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${preset.title.replace(/</g,'&lt;')}</title>
+  <link rel="icon" type="image/png" href="${preset.iconUrl}">
+  <link rel="shortcut icon" type="image/png" href="${preset.iconUrl}">
+  <style>
+    html,body,iframe { height:100%; width:100%; margin:0; border:0; }
+    body { background:#0b1e3d; }
+  </style>
+</head>
+<body>
+  <iframe id="app" name="app" allow="fullscreen; autoplay; clipboard-read; clipboard-write; popups"
+          referrerpolicy="no-referrer"></iframe>
+  <script>
+    (function(){
+      const f = document.getElementById('app');
+
+      function ensureFavicon(rel){
+        let link = document.querySelector('link[rel="'+rel+'"]');
+        if (!link) {
+          link = document.createElement('link');
+          link.rel = rel;
+          link.type = 'image/png';
+          document.head.appendChild(link);
+        }
+        return link;
+      }
+
+      // Let opener change our tab look
+      window.setTab = function(title, iconUrl){
+        try {
+          document.title = title;
+          const a = ensureFavicon('icon');
+          const b = ensureFavicon('shortcut icon');
+          a.href = iconUrl; b.href = iconUrl;
+        } catch(e){}
+      };
+
+      // Navigate iframe
+      window.nav = function(u){ f.src = u; };
+
+      // Initial load (parent may be same-origin or cross-origin; URL still works)
+      window.nav(${JSON.stringify(startUrl)});
+    })();
+  <\/script>
+</body>
+</html>`;
+    doc.open();
+    doc.write(shell);
+    doc.close();
+  }
+
+  // Button -> open about:blank with current page and current preset
+  const btn = document.getElementById('openBlankBtn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      openAboutBlank(location.href);
+      // Try to push the current preset to the shell soon after it exists
+      setTimeout(() => {
+        const p = getPreset();
+        if (blankWin && !blankWin.closed && typeof blankWin.setTab === 'function') {
+          blankWin.setTab(p.title, p.iconUrl);
+        }
+      }, 100);
+    });
+  }
+
+  // Route all same-tab links into about:blank's iframe if it's open
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+    if (a.target === '_blank') return;
+    if (blankWin && !blankWin.closed && typeof blankWin.nav === 'function') {
+      e.preventDefault();
+      blankWin.nav(a.href);
+      // Keep title/icon synced after navigation
+      const p = getPreset();
+      if (typeof blankWin.setTab === 'function') blankWin.setTab(p.title, p.iconUrl);
+    }
+  }, { capture: true });
+
+  // Expose a helper so Settings script can push updates if needed
+  window.__aboutBlankSync = function(title, iconUrl){
+    if (blankWin && !blankWin.closed && typeof blankWin.setTab === 'function') {
+      blankWin.setTab(title, iconUrl);
+    }
+  };
+})();
+  </script>
+
+  <!-- Settings script (now also updates about:blank shell) -->
+  <script>
+    (function(){
+      const settingsBtn = document.getElementById('settingsBtn');
+      const menu = document.getElementById('settingsMenu');
+      if (!settingsBtn || !menu) return;
+
+      const FAV_KEY = 'tabPreset';
+
+      function getOrCreateFavicon(rel) {
+        let link = document.querySelector('link[rel="'+rel+'"]');
+        if (!link) {
+          link = document.createElement('link');
+          link.rel = rel;
+          link.type = 'image/png';
+          document.head.appendChild(link);
+        }
+        return link;
+      }
+
+      function applyPreset(title, iconUrl) {
+        // Update this window
+        document.title = title;
+        const icon = getOrCreateFavicon('icon');
+        const shortcut = getOrCreateFavicon('shortcut icon');
+        icon.href = iconUrl;
+        shortcut.href = iconUrl;
+
+        // Persist
+        try { localStorage.setItem(FAV_KEY, JSON.stringify({ title, iconUrl })); } catch(e){}
+
+        // Also update about:blank shell if open
+        try {
+          if (window.__aboutBlankSync) window.__aboutBlankSync(title, iconUrl);
+        } catch(e){}
+      }
+
+      // Apply saved preset on load
+      (function restore(){
+        try {
+          const saved = JSON.parse(localStorage.getItem(FAV_KEY) || 'null');
+          if (saved && saved.title && saved.iconUrl) {
+            applyPreset(saved.title, saved.iconUrl);
+          }
+        } catch(e){}
+      })();
+
+      function toggleMenu(force) {
+        const open = (typeof force === 'boolean') ? force : !menu.classList.contains('open');
+        menu.classList.toggle('open', open);
+        settingsBtn.setAttribute('aria-expanded', String(open));
+      }
+      settingsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+      document.addEventListener('click', (e) => {
+        if (!menu.contains(e.target) && e.target !== settingsBtn) toggleMenu(false);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') toggleMenu(false);
+      });
+
+      // Clicks inside menu -> change preset
+      menu.querySelectorAll('.settings-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const title = btn.getAttribute('data-title');
+          const icon = btn.getAttribute('data-icon');
+          applyPreset(title, icon);
+          toggleMenu(false);
+        });
+      });
+    })();
+  </script>
+    <script>
+    (function(){
+      let buffer = '';
+      document.addEventListener('keydown', (e) => {
+        if (e.key.length === 1) buffer += e.key.toLowerCase();
+        if (buffer.length > 10) buffer = buffer.slice(-10);
+        if (buffer.includes('secret')) {
+          window.location.href = 'https://ojjys-games-16390424.codehs.me/ojjyisactuallyjonasandhemadethiswebsite.html';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
